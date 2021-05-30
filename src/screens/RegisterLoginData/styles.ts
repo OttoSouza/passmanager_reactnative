@@ -3,20 +3,20 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #4E3975;
+  background-color: ${props => props.theme.colors.purple};;
 `;
 
 export const HeaderTitle = styled.Text`
-  color: #FFFFFF;
+  color: ${props => props.theme.colors.white};;
   font-size: ${RFValue(18)}px;
-  font-family: 'Poppins_500Medium';
+  font-family: ${props => props.theme.fonts.medium};
 
   margin: ${RFValue(64)}px auto ${RFValue(41)}px auto;
 `;
 
 export const Form = styled.View`
   flex: 1;
-  background-color: #FFFFFF;
+  background-color: ${props => props.theme.colors.white};;
 
   padding: 0 ${RFValue(27)}px;
   padding-top: ${RFValue(26)}px;

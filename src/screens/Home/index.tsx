@@ -5,12 +5,14 @@ import { useFocusEffect } from "@react-navigation/native";
 import { SearchBar } from "../../components/SearchBar";
 import { LoginDataItem } from "../../components/LoginDataItem";
 
+import { useStorageData } from "../../hooks/useStorageData";
 import {
   Container,
   LoginList,
   EmptyListContainer,
   EmptyListMessage,
 } from "./styles";
+import { TouchableOpacity } from "react-native";
 
 interface LoginDataProps {
   id: string;
@@ -19,22 +21,28 @@ interface LoginDataProps {
   password: string;
 }
 
-type LoginListDataProps = LoginDataProps[];
+export type LoginListDataProps = LoginDataProps[];
 
 export function Home() {
-  const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
-  const [data, setData] = useState<LoginListDataProps>([]);
+  const { searchListData, loadData, handleFilterLoginData, removeItem } =
+    useStorageData();
+  // const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
+  // const [data, setData] = useState<LoginListDataProps>([]);
 
-  async function loadData() {
-    // Get asyncStorage data, use setSearchListData and setData
+  // async function loadData() {
+  //   // Get asyncStorage data, use setSearchListData and setData
 
-    const dataKey = "@passmanager:logins";
-    const response = await AsyncStorage.getItem(dataKey);
-    const getData = response ? JSON.parse(response) : [];
+  //   const dataKey = "@passmanager:logins";
+  //   const response = await AsyncStorage.getItem(dataKey);
+  //   const getData = response ? JSON.parse(response) : [];
 
-    setSearchListData(getData);
-    setData(getData);
+  //   setSearchListData(getData);
+  //   setData(getData);
+  // }
+  function handleRemoveItem(id: string) {
+    removeItem(id);
   }
+
   useEffect(() => {
     loadData();
   }, []);
@@ -44,12 +52,6 @@ export function Home() {
       loadData();
     }, [])
   );
-
-  function handleFilterLoginData(search: string) {
-    // Filter results inside data, save with setSearchListData
-    const titleFiltered = data.filter((item) => item.title.includes(search))
-    setSearchListData(titleFiltered);
-  }
 
   return (
     <Container>
@@ -68,11 +70,13 @@ export function Home() {
         }
         renderItem={({ item: loginData }) => {
           return (
-            <LoginDataItem
-              title={loginData.title}
-              email={loginData.email}
-              password={loginData.password}
-            />
+            <TouchableOpacity onLongPress={() => handleRemoveItem(loginData.id)}>
+              <LoginDataItem
+                title={loginData.title}
+                email={loginData.email}
+                password={loginData.password}
+              />
+            </TouchableOpacity>
           );
         }}
       />

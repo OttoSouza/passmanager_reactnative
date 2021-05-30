@@ -11,6 +11,8 @@ import { Input } from "../../components/Form/Input";
 import { Button } from "../../components/Form/Button";
 
 import { Container, HeaderTitle, Form } from "./styles";
+import { useStorageData } from "../../hooks/useStorageData";
+import { useNavigation } from "@react-navigation/native";
 
 interface FormData {
   title: string;
@@ -33,25 +35,14 @@ export function RegisterLoginData() {
     reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+  const { addPassword } = useStorageData();
+  const navigate = useNavigation()
 
   async function handleRegister(formData: FormData) {
-    const newLoginData = {
-      id: String(uuid.v4()),
-      ...formData,
-    };
-
-    // Save data on AsyncStorage
     try {
-      const dataKey = "@passmanager:logins";
-      const response = await AsyncStorage.getItem(dataKey);
-      const currentData = response ? JSON.parse(response) : [];
-
-      const newData = [...currentData, newLoginData];
-
-      await AsyncStorage.setItem(dataKey, JSON.stringify(newData));
-
+      addPassword(formData);
       reset();
-      
+      navigate.navigate("Home")
     } catch (error) {
       console.log(error);
       Alert.alert("Erro ao cadastrar key");
